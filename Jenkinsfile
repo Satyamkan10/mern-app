@@ -50,7 +50,7 @@ pipeline {
         stage('Start Backend with PM2') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    bat 'pm2 start index.js --name mern-app'
+                    bat 'npx pm2 start index.js --name mern-app'
                 }
             }
         }
