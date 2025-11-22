@@ -73,8 +73,7 @@ pipeline {
         stage('Start Backend Server') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    // Backend will read PORT and MONGO_URI from .env
-                    bat 'npx nodemon index.js'
+                    bat 'powershell Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c npx nodemon index.js"'
                 }
             }
         }
@@ -82,8 +81,7 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Serve built frontend with Vite preview
-                    bat 'npm run preview'
+                    bat 'powershell Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c npm start"'
                 }
             }
         }
@@ -92,8 +90,8 @@ pipeline {
     post {
         success {
             echo "✅ MERN pipeline completed successfully!"
-            echo "🛠️ Backend running on http://localhost:5000 (from .env)"
-            echo "🌐 Frontend served from http://localhost:4173 (or port 3000 if overridden in vite.config.js)"
+            echo "🛠️ Backend running on http://localhost:5000"
+            echo "🌐 Frontend served from http://localhost:3000"
         }
         failure {
             echo "❌ Pipeline failed!"
