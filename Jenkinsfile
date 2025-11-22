@@ -82,8 +82,8 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // CRA dev server runs on http://localhost:3000
-                     bat 'start /b serve -s build -l 3000'
+                    // Serve CRA build on http://localhost:3000 using local serve package
+                    bat 'start /b npx serve -s build -l 3000'
                 }
             }
         }
