@@ -15,8 +15,8 @@ pipeline {
     }
 
     environment {
-        BACKEND_DIR = "${WORKSPACE}/backend"
-        FRONTEND_DIR = "${WORKSPACE}/frontend"
+        BACKEND_DIR = "${WORKSPACE}/public"
+        FRONTEND_DIR = "${WORKSPACE}/server"
         SERVER_PORT = "5000"
     }
 
