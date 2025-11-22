@@ -14,7 +14,7 @@ const app = express();
 
 // ✅ CORS setup: Allowing only Vercel frontend
 app.use(cors({
-  origin: "https://zappy-chat-app.vercel.app",  // Allow only this origin
+  origin: "*",  // Allow only this origin
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
