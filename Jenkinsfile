@@ -50,7 +50,7 @@ pipeline {
         stage('Start Backend with PM2') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    bat 'set PM2_HOME=E:\\jenkins\\.pm2 && npx pm2 start index.js --name mern-app'
+                    bat 'set PM2_HOME=E:\\jenkins\\.pm2 && npx pm2 restart mern-app || npx pm2 start index.js --name mern-app'
                 }
             }
         }
