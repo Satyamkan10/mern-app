@@ -12,9 +12,11 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ CORS setup: Allowing only Vercel frontend
+// ✅ CORS setup: Allow any origin dynamically (safe with credentials)
 app.use(cors({
-  origin: "*",  // Allow only this origin
+  origin: (origin, callback) => {
+    callback(null, origin || "*"); // allow whatever origin is making the request
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -45,10 +47,12 @@ const server = app.listen(process.env.PORT || 5000, () =>
   console.log(`Server started on ${process.env.PORT || 5000}`)
 );
 
-// ✅ Socket.io setup
+// ✅ Socket.io setup with dynamic CORS
 const io = socket(server, {
   cors: {
-    origin: "*",
+    origin: (origin, callback) => {
+      callback(null, origin || "*");
+    },
     methods: ["GET", "POST"],
     credentials: true
   }
