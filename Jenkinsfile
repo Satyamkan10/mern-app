@@ -15,9 +15,10 @@ pipeline {
     }
 
     environment {
-        BACKEND_DIR = "${WORKSPACE}/public"
-        FRONTEND_DIR = "${WORKSPACE}/server"
+        BACKEND_DIR = "${WORKSPACE}/server"
+        FRONTEND_DIR = "${WORKSPACE}/public"
         SERVER_PORT = "5000"
+        MONGO_URI = "mongodb+srv://Harshu003:Harshsanu%402003@cluster0.4v2s4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  // Replace with your actual DB name
     }
 
     stages {
@@ -70,7 +71,7 @@ pipeline {
         stage('Start Backend Server') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    bat "powershell Start-Process -NoNewWindow -FilePath 'cmd.exe' -ArgumentList '/c npm run dev'"
+                    bat 'set PORT=%SERVER_PORT% && set MONGO_URI=%MONGO_URI% && npm run dev'
                 }
             }
         }
@@ -78,8 +79,7 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Serve the built frontend using Vite preview
-                    bat "powershell Start-Process -NoNewWindow -FilePath 'cmd.exe' -ArgumentList '/c npm run preview'"
+                    bat 'npm run preview'
                 }
             }
         }
@@ -87,12 +87,12 @@ pipeline {
 
     post {
         success {
-            echo "MERN pipeline completed successfully!"
-            echo "Frontend served from http://localhost:4173 (default Vite preview port)"
-            echo "Backend running on port ${SERVER_PORT}"
+            echo "✅ MERN pipeline completed successfully!"
+            echo "🌐 Frontend served from http://localhost:4173 (or port 3000 if overridden)"
+            echo "🛠️ Backend running on http://localhost:${SERVER_PORT}"
         }
         failure {
-            echo "Pipeline failed!"
+            echo "❌ Pipeline failed!"
         }
     }
 }
