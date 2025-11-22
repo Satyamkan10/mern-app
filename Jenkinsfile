@@ -17,8 +17,6 @@ pipeline {
     environment {
         BACKEND_DIR = "${WORKSPACE}/server"
         FRONTEND_DIR = "${WORKSPACE}/public"
-        SERVER_PORT = "5000"
-        MONGO_URI = "mongodb+srv://Harshu003:Harshsanu%402003@cluster0.4v2s4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  // Replace with your actual DB name
     }
 
     stages {
@@ -75,7 +73,8 @@ pipeline {
         stage('Start Backend Server') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    bat 'set PORT=%SERVER_PORT% && set MONGO_URI=%MONGO_URI% && npx nodemon index.js'
+                    // Backend will read PORT and MONGO_URI from .env
+                    bat 'npx nodemon index.js'
                 }
             }
         }
@@ -83,6 +82,7 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
+                    // Serve built frontend with Vite preview
                     bat 'npm run preview'
                 }
             }
@@ -92,8 +92,8 @@ pipeline {
     post {
         success {
             echo "✅ MERN pipeline completed successfully!"
-            echo "🛠️ Backend running on http://localhost:${SERVER_PORT}"
-            echo "🌐 Frontend served from http://localhost:4173 (or port 3000 if overridden)"
+            echo "🛠️ Backend running on http://localhost:5000 (from .env)"
+            echo "🌐 Frontend served from http://localhost:4173 (or port 3000 if overridden in vite.config.js)"
         }
         failure {
             echo "❌ Pipeline failed!"
