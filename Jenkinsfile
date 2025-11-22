@@ -73,7 +73,8 @@ pipeline {
         stage('Start Backend Server') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    bat 'start /b npx nodemon index.js'
+                    // Properly detach backend server
+                    bat 'powershell -Command "Start-Process cmd -ArgumentList \'/c npx nodemon index.js\' -WindowStyle Hidden"'
                 }
             }
         }
@@ -81,7 +82,8 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    bat 'start /b npx serve -s build -l 3000'
+                    // Properly detach frontend server (CRA build served via serve)
+                    bat 'powershell -Command "Start-Process cmd -ArgumentList \'/c npx serve -s build -l 3000\' -WindowStyle Hidden"'
                 }
             }
         }
