@@ -83,7 +83,7 @@ pipeline {
             steps {
                 dir("${FRONTEND_DIR}") {
                     // CRA dev server runs on http://localhost:3000
-                    bat 'start /b npm start'
+                     bat 'start /b serve -s build -l 3000'
                 }
             }
         }
