@@ -70,20 +70,18 @@ pipeline {
             }
         }
 
-        stage('Start Backend Server') {
+        stage('Start Backend with PM2') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    // Properly detach backend server
-                    bat 'powershell -Command "Start-Process cmd -ArgumentList \'/c npx nodemon index.js\' -WindowStyle Hidden"'
+                    bat 'npx pm2 start index.js --name backend'
                 }
             }
         }
 
-        stage('Start Frontend Server') {
+        stage('Start Frontend with PM2') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Properly detach frontend server (CRA build served via serve)
-                    bat 'powershell -Command "Start-Process cmd -ArgumentList \'/c npx serve -s build -l 3000\' -WindowStyle Hidden"'
+                    bat 'npx pm2 serve build 3000 --name frontend'
                 }
             }
         }
@@ -94,6 +92,7 @@ pipeline {
             echo "✅ MERN pipeline completed successfully!"
             echo "🛠️ Backend running on http://localhost:5000"
             echo "🌐 Frontend served from http://localhost:3000"
+            echo "📌 Use 'npx pm2 list' to check running processes."
         }
         failure {
             echo "❌ Pipeline failed!"
