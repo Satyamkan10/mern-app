@@ -56,7 +56,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     dir("${FRONTEND_DIR}") {
-                        bat 'npm test -- --watchAll=false || echo "No frontend tests yet"'
+                        bat 'npm test -- --watchAll=false --passWithNoTests || echo "No frontend tests yet"'
                     }
                 }
             }
@@ -73,7 +73,8 @@ pipeline {
         stage('Start Backend Server') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    bat 'powershell Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c npx nodemon index.js"'
+                    // Run backend in background so Jenkins doesn’t hang
+                    bat 'start /b npx nodemon index.js'
                 }
             }
         }
@@ -81,7 +82,8 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    bat 'powershell Start-Process -NoNewWindow -FilePath "cmd.exe" -ArgumentList "/c npm start"'
+                    // CRA dev server runs on http://localhost:3000
+                    bat 'start /b npm start'
                 }
             }
         }
