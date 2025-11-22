@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "pm2": "^6.0.13",
     "serve": "^14.2.5"
   }
 }
