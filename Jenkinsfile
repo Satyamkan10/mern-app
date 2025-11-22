@@ -43,7 +43,7 @@ pipeline {
 
         stage('Copy Frontend Build to Backend') {
             steps {
-                bat "xcopy /E /I /Y ${FRONTEND_DIR}\\build ${BACKEND_DIR}\\public\\build"
+                bat 'xcopy /E /I /Y "E:\\jenkins\\public\\build" "E:\\jenkins\\server\\public\\build"'
             }
         }
 
