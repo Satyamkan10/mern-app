@@ -73,7 +73,6 @@ pipeline {
         stage('Start Backend Server') {
             steps {
                 dir("${BACKEND_DIR}") {
-                    // Run backend in background so Jenkins doesn’t hang
                     bat 'start /b npx nodemon index.js'
                 }
             }
@@ -82,7 +81,6 @@ pipeline {
         stage('Start Frontend Server') {
             steps {
                 dir("${FRONTEND_DIR}") {
-                    // Serve CRA build on http://localhost:3000 using local serve package
                     bat 'start /b npx serve -s build -l 3000'
                 }
             }
