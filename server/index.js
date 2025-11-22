@@ -48,7 +48,7 @@ const server = app.listen(process.env.PORT || 5000, () =>
 // ✅ Socket.io setup
 const io = socket(server, {
   cors: {
-    origin: "https://zappy-chat-app.vercel.app",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true
   }
