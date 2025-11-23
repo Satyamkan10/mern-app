@@ -13,9 +13,12 @@ pipeline {
     environment {
         BACKEND_DIR = "${WORKSPACE}/server"
         FRONTEND_DIR = "${WORKSPACE}/public"
+        FRONTEND_BUILD = "${WORKSPACE}/public/build"
+        BACKEND_BUILD_DEST = "${WORKSPACE}/server/public/build"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Satyamkan10/mern-app.git'
@@ -43,13 +46,16 @@ pipeline {
 
         stage('Copy Frontend Build to Backend') {
             steps {
-                bat 'xcopy /E /I /Y "E:\\jenkins\\public\\build" "E:\\jenkins\\server\\public\\build"'
+                // Ensure destination exists
+                bat 'if not exist "%BACKEND_BUILD_DEST%" mkdir "%BACKEND_BUILD_DEST%"'
+
+                // Copy the build output
+                bat 'xcopy /E /I /Y "%FRONTEND_BUILD%" "%BACKEND_BUILD_DEST%"'
             }
         }
 
-        stage('Restart Backend (PM2)') {
+        stage('Restart Backend') {
             steps {
-                // Only restart, never start PM2 from Jenkins
                 bat 'pm2 restart mern-app --update-env'
             }
         }
@@ -57,10 +63,9 @@ pipeline {
 
     post {
         success {
-            echo "✅ MERN app deployed successfully!"
-            echo "🌐 Available at http://localhost:5000"
+            echo "🚀 MERN app deployed successfully!"
+            echo "🌍 Available at http://localhost:5000"
         }
-
         failure {
             echo "❌ Deployment failed!"
         }
