@@ -1,73 +1,35 @@
 pipeline {
-    agent {
-        node {
-            label 'built-in'
-            customWorkspace 'E:/jenkins'
-        }
-    }
-
-    tools {
-        nodejs 'node'
-    }
-
-    environment {
-        BACKEND_DIR = "${WORKSPACE}/server"
-        FRONTEND_DIR = "${WORKSPACE}/public"
-        FRONTEND_BUILD = "${WORKSPACE}/public/build"
-        BACKEND_BUILD_DEST = "${WORKSPACE}/server/public/build"
-    }
+    agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Satyamkan10/mern-app.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Docker Image') {
             steps {
-                dir("${BACKEND_DIR}") {
-                    bat 'npm install'
-                }
-                dir("${FRONTEND_DIR}") {
-                    bat 'npm install'
-                }
+                bat 'docker build -t mern-app .'
             }
         }
 
-        stage('Build Frontend') {
+        stage('Deploy Container') {
             steps {
-                dir("${FRONTEND_DIR}") {
-                    bat 'npm run build'
-                }
-            }
-        }
-
-        stage('Copy Frontend Build to Backend') {
-            steps {
-                // Ensure destination exists
-                bat 'if not exist "%BACKEND_BUILD_DEST%" mkdir "%BACKEND_BUILD_DEST%"'
-
-                // Copy the build output
-                bat 'xcopy /E /I /Y "%FRONTEND_BUILD%" "%BACKEND_BUILD_DEST%"'
-            }
-        }
-
-        stage('Restart Backend') {
-            steps {
-                bat 'pm2 restart mern-app --update-env'
+                bat 'docker stop mern-app || true'
+                bat 'docker rm mern-app || true'
+                bat 'docker run -d -p 5000:5000 --name mern-app mern-app'
             }
         }
     }
 
     post {
         success {
-            echo "🚀 MERN app deployed successfully!"
-            echo "🌍 Available at http://localhost:5000"
+            echo "🚀 MERN App deployed via Docker!"
+            echo "🌐 Available at: http://localhost:5000"
         }
         failure {
-            echo "❌ Deployment failed!"
+            echo "❌ Deployment failed."
         }
     }
 }
