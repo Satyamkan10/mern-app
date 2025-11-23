@@ -14,10 +14,23 @@ pipeline {
             }
         }
 
+        stage('Stop Old Container') {
+            steps {
+                // Windows-safe "stop if exists"
+                bat '''
+                docker ps -q -f name=mern-app >nul
+                IF %ERRORLEVEL% EQU 0 (
+                    docker stop mern-app
+                    docker rm mern-app
+                ) ELSE (
+                    echo "No existing container found."
+                )
+                '''
+            }
+        }
+
         stage('Deploy Container') {
             steps {
-                bat 'docker stop mern-app || true'
-                bat 'docker rm mern-app || true'
                 bat 'docker run -d -p 5000:5000 --name mern-app mern-app'
             }
         }
@@ -26,7 +39,7 @@ pipeline {
     post {
         success {
             echo "🚀 MERN App deployed via Docker!"
-            echo "🌐 Available at: http://localhost:5000"
+            echo "🌍 http://localhost:5000"
         }
         failure {
             echo "❌ Deployment failed."
