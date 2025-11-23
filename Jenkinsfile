@@ -18,13 +18,11 @@ pipeline {
             steps {
                 // Windows-safe "stop if exists"
                 bat '''
-                docker ps -q -f name=mern-app >nul
-                IF %ERRORLEVEL% EQU 0 (
-                    docker stop mern-app
-                    docker rm mern-app
-                ) ELSE (
-                    echo "No existing container found."
-                )
+                 FOR /F "tokens=*" %%i IN ('docker ps -aq -f name=mern-app') DO (
+            docker stop %%i
+            docker rm %%i
+        )
+        echo Old container cleanup complete.
                 '''
             }
         }
