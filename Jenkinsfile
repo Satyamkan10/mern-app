@@ -47,11 +47,10 @@ pipeline {
             }
         }
 
-        stage('Start Backend with PM2') {
+        stage('Restart Backend (PM2)') {
             steps {
-                dir("${BACKEND_DIR}") {
-                    bat 'set PM2_HOME=E:\\jenkins\\.pm2 && npx pm2 restart mern-app || npx pm2 start index.js --name mern-app'
-                }
+                // Only restart, never start PM2 from Jenkins
+                bat 'pm2 restart mern-app --update-env'
             }
         }
     }
@@ -61,6 +60,7 @@ pipeline {
             echo "✅ MERN app deployed successfully!"
             echo "🌐 Available at http://localhost:5000"
         }
+
         failure {
             echo "❌ Deployment failed!"
         }
